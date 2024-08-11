@@ -1,9 +1,9 @@
 clusterSecretStore:
   namespace: external-secrets
-  region: eu-west-2
+  region: eu-west-1
 
 externalSecret:
-  name: ""
+  name: ""  # Provide an empty string or a placeholder
   namespace: ""
   secretName: ""
   clusterSecretStore: ""

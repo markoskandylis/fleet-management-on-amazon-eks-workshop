@@ -11,6 +11,11 @@ output "ssh_host" {
   value = local.ssh_host
 }
 
+output "git_private_ssh_key" {
+  value     = local_file.ssh_private_key.filename
+  sensitive = true
+}
+
 output "git_private_ssh_key_content" {
   value     = local_file.ssh_private_key.content
   sensitive = true

@@ -165,7 +165,7 @@ locals {
 
   argocd_apps = {
     addons    = var.enable_addon_selector ? file("${path.module}/bootstrap/addons.yaml"): templatefile("${path.module}/bootstrap/addons.tpl.yaml", {addons: local.addons})
-    #fleet    = file("${path.module}/bootstrap/fleet.yaml")
+    fleet    = file("${path.module}/bootstrap/fleet.yaml")
   }
 
   tags = {
@@ -316,13 +316,13 @@ module "eks" {
       min_size     = 2
       max_size     = 6
       desired_size = 2
-      taints = local.aws_addons.enable_karpenter ? {
-        dedicated = {
-          key    = "CriticalAddonsOnly"
-          operator   = "Exists"
-          effect    = "NO_SCHEDULE"
-        }
-      } : {}
+      # taints = local.aws_addons.enable_karpenter ? {
+      #   dedicated = {
+      #     key    = "CriticalAddonsOnly"
+      #     operator   = "Exists"
+      #     effect    = "NO_SCHEDULE"
+      #   }
+      # } : {}
     }
   }
 
