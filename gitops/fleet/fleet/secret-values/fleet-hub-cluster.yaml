@@ -1,0 +1,11 @@
+externalSecrets:
+  - name: "spoke-prod"
+    namespace: "argocd"
+    secretName: "spoke-prod"
+    secretManagerSecretName: "fleet-hub-cluster/fleet-spoke-prod"
+
+  - name: "spoke-staging"
+    namespace: "argocd"
+    secretName: "spoke-staging"
+    secretManagerSecretName: "fleet-hub-cluster/fleet-spoke-staging"
+
