@@ -1,0 +1,10 @@
+clusterSecretStore:
+  namespace: external-secrets
+  region: eu-west-2
+
+externalSecret:
+  name: ""
+  namespace: ""
+  secretName: ""
+  clusterSecretStore: ""
+  secretManagerSecretName: ""
