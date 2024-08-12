@@ -39,6 +39,7 @@ locals {
   name            = "fleet-hub-cluster"
   environment     = "control-plane"
   tenant          = "tenant1"
+  fleet_member    = "control-plane"
   region          = data.aws_region.current.id
   cluster_version = var.kubernetes_version
   vpc_cidr        = var.vpc_cidr
@@ -119,6 +120,7 @@ locals {
     local.aws_addons,
     local.oss_addons,
     { tenant = local.tenant },
+    { fleet_member = local.fleet_member },
     { kubernetes_version = local.cluster_version },
     { aws_cluster_name = module.eks.cluster_name },
   )

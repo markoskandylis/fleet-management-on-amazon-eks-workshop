@@ -1,11 +1,12 @@
 clusterSecretStore:
-  namespace: external-secrets
-  region: eu-west-1
+  enabled: true
+  region: ""
 
 externalSecret:
-    name: ""
-    fleet_member: ""
-    namespace: ""
-    secretName: ""
+    name: "fleet-eks-secret-store"
+    kind: "SecretStore"
+    server: "spoke"
+    fleet_member: "spoke"
     secretManagerSecretName: ""
+
 
