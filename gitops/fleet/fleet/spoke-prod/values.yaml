@@ -1,0 +1,5 @@
+externalSecret:
+    name: "spoke-prod"
+    namespace: "argocd"
+    secretName: "spoke-prod"
+    secretManagerSecretName: "fleet-hub-cluster/fleet-spoke-prod"

@@ -1,3 +1,11 @@
 clusterSecretStore:
   namespace: external-secrets
   region: eu-west-1
+
+externalSecret:
+    name: ""
+    fleet_member: ""
+    namespace: ""
+    secretName: ""
+    secretManagerSecretName: ""
+
