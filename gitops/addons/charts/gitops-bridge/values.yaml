@@ -803,7 +803,7 @@ addons:
        accountId: '{{.metadata.annotations.aws_account_id}}'
        region: '{{.metadata.annotations.aws_region}}'
        ampurl: '{{.metadata.annotations.amp_endpoint_url}}api/v1/remote_write'
-       serviceAccount: '{{.metadata.annotations.adot_collector_serviceaccount}}'
+       serviceAccount: '{{.metadata.annotations.adot_collector_service_account}}'
     selector:
       matchExpressions:
         - key: enable_adot_collector
@@ -1094,7 +1094,7 @@ addons:
     namespace: '{{default "aws-controllers-k8s" (index .metadata.annotations "ack_s3_namespace")}}'
     chart: aws-controllers-k8s/s3-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.0.14"
+    targetRevision: "1.0.20"
     selector:
       matchExpressions:
         - key: enable_ack_s3
@@ -1105,9 +1105,9 @@ addons:
         region: '{{.metadata.annotations.aws_region}}'
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
-        name: '{{.metadata.annotations.ack_s3_service_account}}'
+        name: '{{default "ack-s3-controller" (index .metadata.annotations "ack_s3_service_account")}}'
         annotations:
-          eks.amazonaws.com/role-arn: '{{.metadata.annotations.ack_s3_iam_role_arn}}'
+          eks.amazonaws.com/role-arn: '{{default "" (index .metadata.annotations "ack_s3_iam_role_arn")}}'
   ack_sfn:
     enabled: false
     releaseName: ack-sfn
@@ -1128,6 +1128,26 @@ addons:
         name: '{{.metadata.annotations.ack_sfn_service_account}}'
         annotations:
           eks.amazonaws.com/role-arn: '{{.metadata.annotations.ack_sfn_iam_role_arn}}'
+  ack_eks:
+    enabled: false
+    releaseName: ack-eks
+    namespace: '{{default "aws-controllers-k8s" (index .metadata.annotations "ack_eks_namespace")}}'
+    chart: aws-controllers-k8s/eks-chart
+    repoUrl: public.ecr.aws
+    targetRevision: "1.5.3"
+    selector:
+      matchExpressions:
+        - key: enable_ack_eks
+          operator: In
+          values: ['true']
+    values:
+      aws:
+        region: '{{.metadata.annotations.aws_region}}'
+      nameOverride: 'aws-controllers-k8s'
+      serviceAccount:
+        name: '{{default "ack-ec2-controller" (index .metadata.annotations "ack_eks_service_account")}}'
+        annotations:
+          eks.amazonaws.com/role-arn: '{{default "" (index .metadata.annotations "ack_eks_iam_role_arn")}}'
   cw_prometheus:
     enabled: false
     namespace: '{{default "amazon-cloudwatch" (index .metadata.annotations "cw_prometheus_namespace")}}'
@@ -1147,3 +1167,32 @@ addons:
     path: charts/eks-upgrade-insights-demo
     repoUrl: '{{.metadata.annotations.addons_repo_url}}'
     targetRevision: '{{.metadata.annotations.addons_repo_revision}}'
+
+  ack_secretsmanager:
+    enabled: false
+    releaseName: ack-secretsmanager
+    namespace: '{{default "aws-controllers-k8s" (index .metadata.annotations "ack_secretsmanager_namespace")}}'
+    chart: aws-controllers-k8s/secretsmanager-chart
+    repoUrl: public.ecr.aws
+    targetRevision: "1.0.1"
+    selector:
+      matchExpressions:
+        - key: enable_ack_secretsmanager
+          operator: In
+          values: ['true']
+    values:
+      aws:
+        region: '{{.metadata.annotations.aws_region}}'
+                  
+  kro:
+    enabled: false
+    releaseName: kro
+    namespace: kro
+    chart: kro/kro
+    repoUrl: public.ecr.aws
+    targetRevision: "0.1.0"
+    selector:
+      matchExpressions:
+        - key: enable_kro
+          operator: In
+          values: ['true']

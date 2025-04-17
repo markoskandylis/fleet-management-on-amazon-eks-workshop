@@ -32,4 +32,12 @@ addons:
     enabled: true
   eks_upgrade_insights_demo:
     enabled: true
+  kro:
+    enabled: true
+  ack_eks:
+    enabled: true
+  ack_s3:
+    enabled: true
+  ack_secretsmanager:
+    enabled: true
 
