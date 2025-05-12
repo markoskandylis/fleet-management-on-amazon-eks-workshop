@@ -1,0 +1,9 @@
+global:
+  tolerations:
+  - key: "CriticalAddonsOnly"
+    operator: "Exists"
+    effect: "NoSchedule"
+controller:
+  env:
+    - name: ARGOCD_SYNC_WAVE_DELAY
+      value: '30'

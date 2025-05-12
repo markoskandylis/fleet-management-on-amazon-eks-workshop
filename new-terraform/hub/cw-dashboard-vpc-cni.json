@@ -1,0 +1,130 @@
+{
+    "variables": [
+        {
+            "type": "property",
+            "property": "CLUSTER_ID",
+            "inputType": "select",
+            "id": "CLUSTER_ID",
+            "label": "EKS Cluster",
+            "defaultValue": "**default_cluster**",
+            "visible": true,
+            "search": "{Kubernetes,CLUSTER_ID} MetricName=assignIPAddresses",
+            "populateFrom": "CLUSTER_ID"
+        }
+    ],
+    "widgets": [
+        {
+            "height": 6,
+            "width": 7,
+            "y": 6,
+            "x": 7,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [{ "expression": "100 * m1 / m2", "label": "eniUtilization", "id": "e1" }],
+                    [{ "expression": "AVG(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"eniAllocated\" CLUSTER_ID=\"**default_cluster**\"', 'Average', 300))", "id": "m1", "visible": false }],
+                    [{ "expression": "AVG(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"eniMaxAvailable\" CLUSTER_ID=\"**default_cluster**\"', 'Average', 300))", "id": "m2", "visible": false }]
+                ],
+                "sparkline": true,
+                "view": "gauge",
+                "region": "**aws_region**",
+                "stat": "Average",
+                "period": 300,
+                "title": "ENIs utilization",
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "max": 100
+                    }
+                }
+            }
+        },
+        {
+            "height": 6,
+            "width": 7,
+            "y": 0,
+            "x": 14,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [{ "expression": "SUM(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"ec2ApiReqCount\" CLUSTER_ID=\"**default_cluster**\"', 'Sum', 300))", "id": "m1" }]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "**aws_region**",
+                "stat": "Sum",
+                "period": 300,
+                "title": "EC2 API request count"
+            }
+        },
+        {
+            "height": 6,
+            "width": 7,
+            "y": 0,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [{ "expression": "SUM(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"assignIPAddresses\" CLUSTER_ID=\"**default_cluster**\"', 'Sum', 300))", "id": "m1" }],
+                    [{ "expression": "SUM(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"totalIPAddresses\" CLUSTER_ID=\"**default_cluster**\"', 'Sum', 300))", "id": "m2" }],
+                    [{ "expression": "SUM(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"maxIPAddresses\" CLUSTER_ID=\"**default_cluster**\"', 'Sum', 300))", "id": "m3" }]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "**aws_region**",
+                "setPeriodToTimeRange": true,
+                "yAxis": {
+                    "right": {
+                        "showUnits": true
+                    }
+                },
+                "title": "IP addresses",
+                "period": 300
+            }
+        },
+        {
+            "height": 6,
+            "width": 7,
+            "y": 0,
+            "x": 7,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [{ "expression": "m1 / m3 * 100", "label": "IP addresses utilization", "id": "e1" }],
+                    [{ "expression": "SUM(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"assignIPAddresses\" CLUSTER_ID=\"**default_cluster**\"', 'Sum', 300))", "id": "m1", "visible": false }],
+                    [{ "expression": "SUM(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"totalIPv4Prefixes\" CLUSTER_ID=\"**default_cluster**\"', 'Sum', 300))", "id": "m2", "visible": false }],
+                    [{ "expression": "SUM(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"maxIPAddresses\" CLUSTER_ID=\"**default_cluster**\"', 'Sum', 300))", "id": "m3", "visible": false }]
+                ],
+                "view": "gauge",
+                "region": "**aws_region**",
+                "stat": "Average",
+                "period": 300,
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                "title": "IP addresses utilization"
+            }
+        },
+        {
+            "height": 6,
+            "width": 7,
+            "y": 6,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "view": "timeSeries",
+                "stacked": false,
+                "metrics": [
+                    [{ "expression": "SUM(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"eniAllocated\" CLUSTER_ID=\"**default_cluster**\"', 'Sum', 300))", "id": "m1" }],
+                    [{ "expression": "SUM(SEARCH('{Kubernetes,CLUSTER_ID} MetricName=\"eniMaxAvailable\" CLUSTER_ID=\"**default_cluster**\"', 'Sum', 300))", "id": "m2" }]
+                ],
+                "region": "**aws_region**",
+                "title": "ENIs",
+                "period": 300
+            }
+        }
+    ]
+}
