@@ -63,19 +63,20 @@ addons:
     namespace: argocd
     chart: argo-cd
     repoUrl: https://argoproj.github.io/argo-helm
-    targetRevision: "7.5.2"
+    targetRevision: "8.0.10"
     selector:
       matchExpressions:
         - key: enable_argocd
           operator: In
           values: ['true']
+
   aws_load_balancer_controller:
     enabled: false
     releaseName: aws-load-balancer-controller
     aws_load_balancer_controller:
     chart: aws-load-balancer-controller
     repoUrl: https://aws.github.io/eks-charts
-    targetRevision: "1.11.0"
+    targetRevision: "1.13.2"
     namespace: '{{ default "kube-system" (index .metadata.annotations "aws_load_balancer_controller_namespace") }}'
     annotationsAppSet:
       argocd.argoproj.io/sync-wave: '-1'
@@ -108,7 +109,7 @@ addons:
     namespace: gatekeeper-system
     chart: gatekeeper
     repoUrl: https://open-policy-agent.github.io/gatekeeper/charts
-    targetRevision: "3.16.3"
+    targetRevision: "3.19.1"
     selector:
       matchExpressions:
         - key: enable_gatekeeper
@@ -128,7 +129,7 @@ addons:
     metrics_server:
     chart: metrics-server
     repoUrl: https://kubernetes-sigs.github.io/metrics-server
-    targetRevision: "3.12.1"
+    targetRevision: "3.12.2"
     selector:
       matchExpressions:
         - key: enable_metrics_server
@@ -152,7 +153,7 @@ addons:
     namespace: '{{ default "kube-system" (index .metadata.annotations "karpenter_namespace") }}'
     chart: karpenter/karpenter
     repoUrl: public.ecr.aws
-    targetRevision: "1.0.4"
+    targetRevision: "1.5.0"
     selector:
       matchExpressions:
         - key: enable_karpenter
@@ -187,7 +188,7 @@ addons:
     namespace: volcano-system
     chart: volcano
     repoUrl: https://volcano-sh.github.io/helm-charts
-    targetRevision: "1.9.0"
+    targetRevision: "1.11.2"
     selector:
       matchExpressions:
         - key: enable_volcano
@@ -220,7 +221,7 @@ addons:
     namespace: '{{ default "kube-system" (index .metadata.annotations "aws_efs_csi_driver_namespace") }}'
     chart: aws-efs-csi-driver
     repoUrl: https://kubernetes-sigs.github.io/aws-efs-csi-driver
-    targetRevision: "3.0.7"
+    targetRevision: "3.1.9"
     selector:
       matchExpressions:
         - key: enable_aws_efs_csi_driver
@@ -244,7 +245,7 @@ addons:
     namespace: '{{ default "kube-system" (index .metadata.annotations "aws_fsx_csi_driver_namespace") }}'
     chart: aws-fsx-csi-driver
     repoUrl: https://kubernetes-sigs.github.io/aws-fsx-csi-driver
-    targetRevision: "1.9.0"
+    targetRevision: "1.11.0"
     selector:
       matchExpressions:
         - key: enable_aws_fsx_csi_driver
@@ -268,7 +269,7 @@ addons:
     namespace: '{{ default "kube-system" (index .metadata.annotations "aws_for_fluentbit_namespace") }}'
     chart: aws-for-fluent-bit
     repoUrl: https://aws.github.io/eks-charts
-    targetRevision: "0.1.34"
+    targetRevision: "0.1.35"
     selector:
       matchExpressions:
         - key: enable_aws_for_fluentbit
@@ -348,7 +349,7 @@ addons:
     namespace: '{{ default "argo-worflows" (index .metadata.annotations "argo_workflows_namespace") }}'
     chart: argo-workflows
     repoUrl: https://argoproj.github.io/argo-helm
-    targetRevision: "0.41.14"
+    targetRevision: "0.45.15"
     selector:
       matchExpressions:
         - key: enable_aws_argo_workflows_ingress
@@ -380,7 +381,7 @@ addons:
     namespace: '{{ default "argocd" (index .metadata.annotations "aws_argocd_namespace") }}'
     chart: argo-cd
     repoUrl: https://argoproj.github.io/argo-helm
-    targetRevision: "7.4.1"
+    targetRevision: "8.0.10"
     selector:
       matchExpressions:
         - key: enable_aws_argocd
@@ -402,7 +403,7 @@ addons:
     namespace: '{{ default "argocd" (index .metadata.annotations "aws_argocd_ingress_namespace") }}'
     chart: argo-cd
     repoUrl: https://argoproj.github.io/argo-helm
-    targetRevision: "7.4.1"
+    targetRevision: "8.0.10"
     selector:
       matchExpressions:
         - key: enable_aws_argocd_ingress
@@ -455,7 +456,7 @@ addons:
     namespace: '{{ default "kube-system" (index .metadata.annotations "cluster_autoscaler_namespace") }}'
     chart: cluster-autoscaler
     repoUrl: https://kubernetes.github.io/autoscaler
-    targetRevision: "9.37.0"
+    targetRevision: "9.46.6"
     selector:
       matchExpressions:
         - key: enable_cluster_autoscaler
@@ -532,7 +533,7 @@ addons:
     namespace: '{{ default "kube-system" (index .metadata.annotations "external_dns_namespace") }}'
     chart: external-dns
     repoUrl: https://kubernetes-sigs.github.io/external-dns
-    targetRevision: "1.14.5"
+    targetRevision: "1.16.1"
     selector:
       matchExpressions:
         - key: enable_external_dns
@@ -552,7 +553,7 @@ addons:
     namespace: '{{ default "kube-system" (index .metadata.annotations "external_secrets_namespace") }}'
     chart: external-secrets
     repoUrl: https://charts.external-secrets.io
-    targetRevision: "0.10.0"
+    targetRevision: "0.17.0"
     selector:
       matchExpressions:
         - key: enable_external_secrets
@@ -563,6 +564,7 @@ addons:
         name: '{{.metadata.annotations.external_secrets_service_account}}'
         annotations:
           eks.amazonaws.com/role-arn: '{{.metadata.annotations.external_secrets_iam_role_arn}}'
+
   aws_privateca_issuer:
     enabled: false
     releaseName: privateca-issuer
@@ -580,13 +582,14 @@ addons:
         name: '{{.metadata.annotations.aws_privateca_issuer_service_account}}'
         annotations:
           eks.amazonaws.com/role-arn: '{{.metadata.annotations.aws_privateca_issuer_iam_role_arn}}'
+
   velero:
     enabled: false
     releaseName: velero
     namespace: '{{ default "kube-system" (index .metadata.annotations "velero_namespace") }}'
     chart: velero
     repoUrl: https://vmware-tanzu.github.io/helm-charts
-    targetRevision: "7.1.4"
+    targetRevision: "9.1.3"
     selector:
       matchExpressions:
         - key: enable_velero
@@ -618,54 +621,59 @@ addons:
           volumeMounts:
             - mountPath: /target
               name: plugins
+
   aws_secrets_store_csi_driver_provider:
     enabled: false
     releaseName: secrets-store-csi-driver-provider-aws
     namespace: '{{ default "kube-system" (index .metadata.annotations "aws_secrets_store_csi_driver_provider_namespace")}}'
     chart: secrets-store-csi-driver-provider-aws
     repoUrl: https://aws.github.io/secrets-store-csi-driver-provider-aws
-    targetRevision: "0.3.9"
+    targetRevision: "1.0.1"
     selector:
       matchExpressions:
         - key: enable_aws_secrets_store_csi_driver_provider
           operator: In
           values: ['true']
+
   argo_events:
     enabled: false
     releaseName: argo-events
     namespace: '{{ default "argo-events" (index .metadata.annotations "argo_events_namespace")}}'
     chart: argo-events
     repoUrl: https://argoproj.github.io/argo-helm
-    targetRevision: "2.4.7"
+    targetRevision: "2.4.15"
     selector:
       matchExpressions:
         - key: enable_argo_events
           operator: In
           values: ['true']
+
   argo_rollouts:
     enabled: false
     releaseName: argo-rollouts
     namespace: '{{ default "argo-rollouts" (index .metadata.annotations "argo_rollouts_namespace")}}'
     chart: argo-rollouts
     repoUrl: https://argoproj.github.io/argo-helm
-    targetRevision: "2.37.3"
+    targetRevision: "2.39.5"
     selector:
       matchExpressions:
         - key: enable_argo_rollouts
           operator: In
           values: ['true']
+
   argo_workflows:
     enabled: false
     releaseName: argo-workflows
     namespace: '{{ default "argo-workflows" (index .metadata.annotations "argo_workflows_namespace")}}'
     chart: argo-workflows
     repoUrl: https://argoproj.github.io/argo-helm
-    targetRevision: "0.41.14"
+    targetRevision: "0.45.15"
     selector:
       matchExpressions:
         - key: enable_argo_workflows
           operator: In
           values: ['true']
+
   cluster_proportional_autoscaler:
     enabled: false
     releaseName: cluster-proportional-autoscaler
@@ -678,13 +686,14 @@ addons:
         - key: enable_cluster_proportional_autoscaler
           operator: In
           values: ['true']
+
   crossplane:
     enabled: false
     releaseName: crossplane
     namespace: '{{ default "crossplane-system" (index .metadata.annotations "crossplane_namespace")}}'
     chart: crossplane
     repoUrl: https://crossplane.github.io/charts
-    targetRevision: "1.16.0"
+    targetRevision: "1.20.0"
     selector:
       matchExpressions:
         - key: enable_crossplane
@@ -696,6 +705,7 @@ addons:
         jqPathExpressions:
           - .spec.template.spec.containers[].env[].valueFrom.resourceFieldRef.divisor
           - .spec.template.spec.initContainers[].env[].valueFrom.resourceFieldRef.divisor
+
   crossplane_helm_provider:
     enabled: false
     releaseName: crossplane-helm
@@ -708,6 +718,7 @@ addons:
         - key: enable_crossplane_helm_provider
           operator: In
           values: ['true']
+
   crossplane_kubernetes_provider:
     enabled: false
     releaseName: crossplane-kubernetes
@@ -720,6 +731,7 @@ addons:
         - key: enable_crossplane_kubernetes_provider
           operator: In
           values: ['true']
+
   gpu_operator:
     enabled: false
     releaseName: gpu-operator
@@ -732,42 +744,46 @@ addons:
         - key: enable_gpu_operator
           operator: In
           values: ['true']
+
   ingress_nginx:
     enabled: false
     releaseName: ingress-nginx
     namespace: '{{ default "ingress-nginx" (index .metadata.annotations "ingress_nginx_namespace")}}'
     chart: ingress-nginx
     repoUrl: https://kubernetes.github.io/ingress-nginx
-    targetRevision: "4.11.1"
+    targetRevision: "4.12.2"
     selector:
       matchExpressions:
         - key: enable_ingress_nginx
           operator: In
           values: ['true']
+
   keda:
     enabled: false
     releaseName: keda
     namespace: '{{ default "keda" (index .metadata.annotations "keda_namespace")}}'
     chart: keda
     repoUrl: https://kedacore.github.io/charts
-    targetRevision: "2.15.0"
+    targetRevision: "2.17.1"
     selector:
       matchExpressions:
         - key: enable_keda
           operator: In
           values: ['true']
+
   kube_prometheus_stack:
     enabled: false
     releaseName: kube-prometheus-stack
     namespace: '{{ default "kube-prometheus-stack" (index .metadata.annotations "kube_prometheus_stack_namespace")}}'
     chart: kube-prometheus-stack
     repoUrl: https://prometheus-community.github.io/helm-charts
-    targetRevision: "62.4.0"
+    targetRevision: "72.6.3"
     selector:
       matchExpressions:
         - key: enable_kube_prometheus_stack
           operator: In
           values: ['true']
+
   grafana_operator:
     enabled: false
     releaseName: grafana-operator
@@ -786,13 +802,14 @@ addons:
         valuesObject:
           AMP_ENDPOINT_URL: '{{.metadata.annotations.amp_endpoint_url}}'
           AMP_AWS_REGION: '{{.metadata.annotations.aws_region}}'
+
   opentelemetry_operator:
     enabled: false
     releaseName: opentelemetry-operator
     namespace: "opentelemetry-operator-system"
     chart: opentelemetry-operator
     repoUrl: https://open-telemetry.github.io/opentelemetry-helm-charts
-    targetRevision: "0.71.1"
+    targetRevision: "0.88.7"
     values:
       manager:
         collectorImage:
@@ -802,6 +819,7 @@ addons:
         - key: enable_opentelemetry_operator
           operator: In
           values: ['true']
+
   adot_collector:
     enabled: false
     namespace: '{{ default "adot-collector-kubeprometheus" (index .metadata.annotations "adot_collector_namespace")}}'
@@ -819,13 +837,14 @@ addons:
         - key: enable_adot_collector
           operator: In
           values: ['true']
+
   kyverno:
     enabled: false
     releaseName: kyverno
     namespace: '{{ default "kyverno" (index .metadata.annotations "kyverno_namespace")}}'
     chart: kyverno
     repoUrl: https://kyverno.github.io/kyverno
-    targetRevision: "3.3.4"
+    targetRevision: "3.4.1"
     selector:
       matchExpressions:
         - key: enable_kyverno
@@ -836,7 +855,6 @@ addons:
       helm:
         valuesObject:
           environment: '{{.metadata.labels.environment}}'
-
 
   kyverno_policy_reporter:
     enabled: false
@@ -853,17 +871,14 @@ addons:
     values:
       serviceAccount:
         name: policy-reporter
-
       logging:
         logLevel: 0
-
       plugin:
         kyverno:
           enabled: true
       ui:
         banner: '{{.metadata.annotations.aws_cluster_name}}'
         enabled: true
-
       target:
         securityHub:
           accountId: '{{.metadata.annotations.aws_account_id}}'
@@ -885,7 +900,7 @@ addons:
     namespace: '{{ default "kyverno" (index .metadata.annotations "kyverno_namespace")}}'
     chart: kyverno-policies
     repoUrl: https://kyverno.github.io/kyverno
-    targetRevision: "3.2.5"
+    targetRevision: "3.4.1"
     selector:
       matchExpressions:
         - key: enable_kyverno_policies
@@ -902,19 +917,20 @@ addons:
     namespace: '{{ default "prometheus-adapter" (index .metadata.annotations "prometheus_adapter_namespace")}}'
     chart: prometheus-adapter
     repoUrl: https://prometheus-community.github.io/helm-charts
-    targetRevision: "4.10.0"
+    targetRevision: "4.14.1"
     selector:
       matchExpressions:
         - key: enable_prometheus_adapter
           operator: In
           values: ['true']
+
   cni_metrics_helper:
     enabled: false
     releaseName: cni-metrics-helper
     namespace: '{{ default "kube-system" (index .metadata.annotations "cni_metrics_helper_namespace")}}'
     chart: cni-metrics-helper
     repoUrl: https://aws.github.io/eks-charts
-    targetRevision: "1.19.2"
+    targetRevision: "1.19.5"
     values:
       env:
         AWS_CLUSTER_ID: '{{.metadata.annotations.aws_cluster_name}}'
@@ -923,25 +939,27 @@ addons:
         - key: enable_cni_metrics_helper
           operator: In
           values: ['true']
+
   kube_state_metrics:
     enabled: false
     releaseName: kube-state-metrics
     namespace: '{{ default "kube-prometheus-stack" (index .metadata.annotations "kube_state_metrics_namespace")}}'
     chart: kube-state-metrics
     repoUrl: https://prometheus-community.github.io/helm-charts
-    targetRevision: "5.25.1"
+    targetRevision: "5.33.1"
     selector:
       matchExpressions:
         - key: enable_kube_state_metrics
           operator: In
           values: ['true']
+
   prometheus_node_exporter:
     enabled: false
     releaseName: prometheus-node-exporter
     namespace: '{{ default "kube-prometheus-stack" (index .metadata.annotations "prometheus_node_exporter_namespace")}}'
     chart: prometheus-node-exporter
     repoUrl: https://prometheus-community.github.io/helm-charts
-    targetRevision: "4.39.0"
+    targetRevision: "4.47.0"
     selector:
       matchExpressions:
         - key: enable_prometheus_node_exporter
@@ -954,31 +972,33 @@ addons:
     namespace: '{{ default "kube-system" (index .metadata.annotations "secrets_store_csi_driver_namespace")}}'
     chart: secrets-store-csi-driver
     repoUrl: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
-    targetRevision: "1.4.4"
+    targetRevision: "1.5.1"
     selector:
       matchExpressions:
         - key: enable_secrets_store_csi_driver
           operator: In
           values: ['true']
+
   vpa:
     enabled: false
     releaseName: vpa
     namespace: '{{ default "vpa" (index .metadata.annotations "vpa_namespace")}}'
     chart: vpa
     repoUrl: https://charts.fairwinds.com/stable
-    targetRevision: "4.5.0"
+    targetRevision: "4.7.2"
     selector:
       matchExpressions:
         - key: enable_vpa
           operator: In
           values: ['true']
+
   ack_apigatewayv2:
     enabled: false
     releaseName: ack-apigatewayv2
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_apigatewayv2_namespace")}}'
     chart: aws-controllers-k8s/apigatewayv2-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.0.20"
+    targetRevision: "1.0.25"
     selector:
       matchExpressions:
         - key: enable_ack_apigatewayv2
@@ -990,15 +1010,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{.metadata.annotations.ack_apigatewayv2_service_account}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{.metadata.annotations.ack_apigatewayv2_iam_role_arn}}'
+
   ack_dynamodb:
     enabled: false
     releaseName: ack-dynamodb
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_dynamodb_namespace")}}'
     chart: aws-controllers-k8s/dynamodb-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.2.18"
+    targetRevision: "1.4.5"
     selector:
       matchExpressions:
         - key: enable_ack_dynamodb
@@ -1010,15 +1029,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{.metadata.annotations.ack_dynamodb_service_account}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{.metadata.annotations.ack_dynamodb_iam_role_arn}}'
+
   ack_prometheusservice:
     enabled: false
     releaseName: ack-prometheusservice
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_prometheusservice_namespace")}}'
     chart: aws-controllers-k8s/prometheusservice-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.2.18"
+    targetRevision: "1.2.23"
     selector:
       matchExpressions:
         - key: enable_ack_prometheusservice
@@ -1030,15 +1048,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{.metadata.annotations.ack_prometheusservice_service_account}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{.metadata.annotations.ack_prometheusservice_iam_role_arn}}'
+
   ack_emrcontainers:
     enabled: false
     releaseName: ack-emrcontainers
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_emrcontainers_namespace")}}'
     chart: aws-controllers-k8s/emrcontainers-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.0.16"
+    targetRevision: "1.0.22"
     selector:
       matchExpressions:
         - key: enable_ack_emrcontainers
@@ -1050,15 +1067,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{.metadata.annotations.ack_emrcontainers_service_account}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{.metadata.annotations.ack_emrcontainers_iam_role_arn}}'
+
   ack_eventbridge:
     enabled: false
     releaseName: ack-eventbridge
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_eventbridge_namespace")}}'
     chart: aws-controllers-k8s/eventbridge-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.0.18"
+    targetRevision: "1.0.23"
     selector:
       matchExpressions:
         - key: enable_ack_eventbridge
@@ -1070,15 +1086,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{.metadata.annotations.ack_eventbridge_service_account}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{.metadata.annotations.ack_eventbridge_iam_role_arn}}'
+
   ack_rds:
     enabled: false
     releaseName: ack-rds
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_rds_namespace")}}'
     chart: aws-controllers-k8s/rds-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.4.9"
+    targetRevision: "1.4.18"
     selector:
       matchExpressions:
         - key: enable_ack_rds
@@ -1090,15 +1105,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{.metadata.annotations.ack_rds_service_account}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{.metadata.annotations.ack_rds_iam_role_arn}}'
+
   ack_s3:
     enabled: false
     releaseName: ack-s3
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_s3_namespace")}}'
     chart: aws-controllers-k8s/s3-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.0.22"
+    targetRevision: "1.0.30"
     selector:
       matchExpressions:
         - key: enable_ack_s3
@@ -1110,15 +1124,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{default "ack-s3-controller" (index .metadata.annotations "ack_s3_service_account")}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{default "" (index .metadata.annotations "ack_s3_iam_role_arn")}}'
+
   ack_sfn:
     enabled: false
     releaseName: ack-sfn
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_sfn_namespace")}}'
     chart: aws-controllers-k8s/sfn-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.0.18"
+    targetRevision: "1.0.24"
     selector:
       matchExpressions:
         - key: enable_ack_sfn
@@ -1130,15 +1143,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{.metadata.annotations.ack_sfn_service_account}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{.metadata.annotations.ack_sfn_iam_role_arn}}'
+
   ack_eks:
     enabled: false
     releaseName: ack-eks
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_eks_namespace")}}'
     chart: aws-controllers-k8s/eks-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.6.0"
+    targetRevision: "1.7.4"
     selector:
       matchExpressions:
         - key: enable_ack_eks
@@ -1150,15 +1162,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{ default "ack-eks-controller" (index .metadata.annotations "ack_eks_service_account")}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{ default "" (index .metadata.annotations "ack_eks_iam_role_arn")}}'
+
   ack_iam:
     enabled: false
     releaseName: ack-eks
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_iam_namespace")}}'
     chart: aws-controllers-k8s/iam-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.3.16"
+    targetRevision: "1.3.21"
     selector:
       matchExpressions:
         - key: enable_ack_iam
@@ -1170,15 +1181,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{ default "ack-iam-controller" (index .metadata.annotations "ack_iam_service_account")}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{ default "" (index .metadata.annotations "ack_iam_iam_role_arn")}}'
+
   ack_ec2:
     enabled: false
     releaseName: ack-ec2
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_ec2_namespace")}}'
     chart: aws-controllers-k8s/ec2-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.3.4"
+    targetRevision: "1.4.6"
     selector:
       matchExpressions:
         - key: enable_ack_ec2
@@ -1190,15 +1200,14 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{ default "ack-ec2-controller" (index .metadata.annotations "ack_ec2_service_account")}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{ default "" (index .metadata.annotations "ack_ec2_iam_role_arn")}}'
+
   ack_secretsmanager:
     enabled: false
     releaseName: ack-secretsmanager
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_secretsmanager_namespace")}}'
     chart: aws-controllers-k8s/secretsmanager-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.0.2"
+    targetRevision: "1.0.7"
     selector:
       matchExpressions:
         - key: enable_ack_secretsmanager
@@ -1210,8 +1219,7 @@ addons:
       nameOverride: 'aws-controllers-k8s'
       serviceAccount:
         name: '{{ default "ack-secretsmanager-controller" (index .metadata.annotations "ack_secretsmanager_service_account")}}'
-        annotations:
-          eks.amazonaws.com/role-arn: '{{ default "" (index .metadata.annotations "ack_secretsmanager_iam_role_arn")}}'
+
   cw_prometheus:
     enabled: false
     namespace: '{{ default "amazon-cloudwatch" (index .metadata.annotations "cw_prometheus_namespace")}}'
@@ -1232,29 +1240,13 @@ addons:
     repoUrl: '{{.metadata.annotations.addons_repo_url}}'
     targetRevision: '{{.metadata.annotations.addons_repo_revision}}'
 
-  ack_secretsmanager:
-    enabled: false
-    releaseName: ack-secretsmanager
-    namespace: '{{default "aws-controllers-k8s" (index .metadata.annotations "ack_secretsmanager_namespace")}}'
-    chart: aws-controllers-k8s/secretsmanager-chart
-    repoUrl: public.ecr.aws
-    targetRevision: "1.0.1"
-    selector:
-      matchExpressions:
-        - key: enable_ack_secretsmanager
-          operator: In
-          values: ['true']
-    values:
-      aws:
-        region: '{{.metadata.annotations.aws_region}}'
-
   kro:
     enabled: false
     releaseName: kro
     namespace: kro
     chart: kro-run/kro/kro
     repoUrl: ghcr.io
-    targetRevision: "0.2.0"
+    targetRevision: "0.3.0"
     selector:
       matchExpressions:
         - key: enable_kro
