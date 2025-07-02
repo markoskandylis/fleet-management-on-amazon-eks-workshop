@@ -553,7 +553,7 @@ addons:
     namespace: '{{ default "kube-system" (index .metadata.annotations "external_secrets_namespace") }}'
     chart: external-secrets
     repoUrl: https://charts.external-secrets.io
-    targetRevision: "0.17.0"
+    targetRevision: "0.16.1"
     selector:
       matchExpressions:
         - key: enable_external_secrets
@@ -1093,7 +1093,7 @@ addons:
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_rds_namespace")}}'
     chart: aws-controllers-k8s/rds-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.4.18"
+    targetRevision: "1.4.22"
     selector:
       matchExpressions:
         - key: enable_ack_rds
@@ -1188,7 +1188,7 @@ addons:
     namespace: '{{ default "aws-controllers-k8s" (index .metadata.annotations "ack_ec2_namespace")}}'
     chart: aws-controllers-k8s/ec2-chart
     repoUrl: public.ecr.aws
-    targetRevision: "1.4.6"
+    targetRevision: "1.4.7"
     selector:
       matchExpressions:
         - key: enable_ack_ec2
