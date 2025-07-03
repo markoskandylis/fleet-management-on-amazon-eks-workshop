@@ -1,0 +1,66 @@
+fleet-external-secrets:
+  enabled: true
+  enableAckPodIdentity: false
+  namespace: platform-system
+  releaseName: fleet-external-secrets
+  chartName: external-secrets
+  defaultVersion: "0.18.0"
+  chartRepository: "https://charts.external-secrets.io"
+  additionalResources:
+    path: "charts/fleet-secret"
+    type: "ecr-token"
+    helm:
+      releaseName: ecr-token
+  valuesObject:
+    serviceAccount:
+      name: "external-secrets-sa"
+    scopedNamespace: "platform-system"
+    scopedRBAC: true
+fleet-argocd:
+  enabled:  true
+  enableAckPodIdentity: false
+  chartName: argo-cd
+  namespace: platform-system
+  releaseName: fleet-argocd
+  defaultVersion: "7.5.2"
+  chartRepository: "https://argoproj.github.io/argo-helm"
+  valuesObject:
+    global:
+      domain: '{{default "" (index .metadata.annotations "argocd_dns")}}'
+  additionalResources:
+    path: "charts/argocd-ingress"
+    type: "ingress"
+    helm:
+     releaseName: ingress
+     valuesObject:
+        ingressClass:
+          useAutomode: '{{default "false" (index .metadata.annotations "enable_automode")}}'
+        ingress:
+          domain: '{{default "" (index .metadata.annotations "argocd_dns")}}'
+          privateCertificate: '{{default "" (index .metadata.annotations "argocd_ingress_certificate")}}'
+          rules:
+            - host: '{{default "argocd.example.com" (index .metadata.annotations "argocd_dns")}}'
+fleet-iam-chart:
+  chartName: iam-chart
+  releaseName: fleet-iam-ack
+  namespace: ack-system
+  defaultVersion: "1.3.13"
+  chartNamespace: aws-controllers-k8s
+  chartRepository: public.ecr.aws
+  valuesObject:
+    aws:
+      region: '{{.metadata.annotations.aws_region}}'
+    serviceAccount:
+      name: '{{.metadata.annotations.ack_iam_service_account}}'
+fleet-ack-eks:
+  chartName: eks-chart
+  namespace: ack-system
+  releaseName: fleet-iam-ack
+  defaultVersion: "1.5.1"
+  chartNamespace: aws-controllers-k8s
+  chartRepository: public.ecr.aws
+  valuesObject:
+    aws:
+      region: '{{.metadata.annotations.aws_region}}'
+    serviceAccount:
+      name: '{{.metadata.annotations.ack_eks_service_account}}'

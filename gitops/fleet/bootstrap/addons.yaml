@@ -1,0 +1,153 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-addons
+  namespace: argocd
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: false
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+  generators:
+  - matrix:
+      generators:
+        - matrix:
+            generators:
+              - clusters:
+                  selector:
+                    matchLabels:
+                      fleet_member: hub-cluster
+                  values:
+                    chartName: application-sets  
+                    chartRepo: "1234567890.dkr.ecr.eu-west-2.amazonaws.com"      
+                    chartPath: "charts/application-sets"
+                    applicationSetGroup: "addons"
+                    groupRelease: '{{default "" (index .metadata.labels "addonsRelease")}}'
+                    useSelectors: "false"
+                    useVersionSelectors: "true"
+              - git:
+                  repoURL: '{{ .metadata.annotations.fleet_repo_url }}'
+                  revision: '{{ .metadata.annotations.fleet_repo_revision }}'
+                  files:
+                    - path: "{{ .metadata.annotations.fleet_repo_basepath }}/bootstrap/versions/applicationSets.yaml"
+        - list:
+            elementsYaml: |
+                  {{- $releaseTypes := index .releases .values.applicationSetGroup | toJson | fromJson -}}
+                  {{- $result := list -}}
+                  {{- $defaultVersion := dict -}}
+                  {{- /* Defining the Default Version in case we need to fall back */ -}}
+                  {{- range $releaseType := $releaseTypes -}}
+                    {{- if eq $releaseType.type "default" -}}
+                      {{- $defaultVersion = $releaseType -}}
+                    {{- end -}}
+                  {{- end -}}
+                  {{- /* We look for the defined releases */ -}}
+                  {{- range $releaseType := $releaseTypes -}}
+                      {{- $result = append $result $releaseType -}}
+                  {{- end -}}
+                  {{- /* If no releases were selected, use default */ -}}
+                  {{- if eq (len $result) 0 -}}
+                    {{- $result = append $result $defaultVersion -}}
+                  {{- end -}}
+                  {{ $result | toJson }}
+  ###################################################
+  #base template (everything common)
+  ###################################################
+  template:
+    metadata:
+      name: 'cluster-{{.values.applicationSetGroup}}-{{.name}}-{{.type | lower }}'
+    spec:
+      project: default
+      destination:
+        namespace: argocd
+        name: '{{ .name }}'
+      # syncPolicy is identical for both variants
+      syncPolicy:
+        automated:
+          selfHeal: false
+          allowEmpty: true
+          prune: false
+        retry:
+          limit: 100
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+  ###################################################
+  # conditional sources
+  ###################################################
+  templatePatch: |
+    {{- $commonValuesPath := printf "%s/%s.yaml" .values.chartName .values.applicationSetGroup  -}}
+    {{- $repoNames := list "addons"  -}}
+
+    {{- $environment := .metadata.labels.environment -}}
+    
+    {{- $tenantPath := "" -}}
+    {{- if and (hasKey . "tenant") .tenant -}}
+      {{- $tenantPath = printf "%s" .tenant -}}
+    {{- else if (index .metadata.labels "tenant") -}}
+      {{- $tenantPath = printf "%s" .metadata.labels.tenant -}}
+    {{- end -}}
+
+
+    {{- $clusterName := "" -}}
+    {{- if and (hasKey . "clusterName") .clusterName -}}
+      {{- $clusterName = .clusterName -}}
+    {{- else  -}}
+      {{- $clusterName = .name -}}
+    {{- end -}}
+
+    {{- $pathPatterns := list
+      (printf "%s/defaults" $tenantPath) 
+      (printf "%s/environments/%s/defaults" $tenantPath $environment) 
+      (printf "%s/environments/%s/clusters/%s" $tenantPath $environment $clusterName) 
+    -}}
+
+    spec:
+      sources:
+      {{- range $repoName := $repoNames }}
+        - repoURL: '{{default (index $.metadata.annotations (printf "%s_repo_url" $repoName)) (index $ "repoUrl")}}'
+          targetRevision: '{{default (index $.metadata.annotations (printf "%s_repo_revision" $repoName)) (index $ "targetRevision")}}'
+          ref: {{$repoName}}Values
+      {{- end }}
+       {{- if  eq .use_helm_repo_path "false" }}
+        - repoURL: '{{default .values.chartRepo .chartRepo }}'
+          chart: '{{ default .values.chartName .ecrChartName  }}'
+          targetRevision: '{{.version}}'
+      {{- else }}
+        - repoURL: '{{ .metadata.annotations.addons_repo_url }}'
+          path:    '{{ default .values.chartPath (index . "chartPath")}}'
+          targetRevision: '{{ default .metadata.annotations.addons_repo_revision (index . "targetRevision")}}'
+      {{- end }}
+          helm:
+            ignoreMissingValueFiles: true
+            valuesObject:
+              useSelectors: false
+              useVersionSelectors: '{{.values.useVersionSelectors}}'
+              applicationSetGroup: {{.values.applicationSetGroup}}
+            # Defining the way to group addons This application set will handly Addons and ACK values
+              mergeValues:
+                addons: 
+                  use: true
+                ack:
+                  use: true
+              releaseType: '{{.type | lower }}'
+              # If we are using version selector we add the version of the releases on the matchlabels
+              {{- if eq .values.useVersionSelectors "true"}}
+              releases:
+                {{.values.applicationSetGroup}}Release: '{{.type | lower}}'
+              {{- end }}
+              {{- if eq .values.useSelectors "false"}}
+              globalSelectors:
+                fleet_member: hub-cluster
+              {{- end }}
+            # Those are the Value files to read for the Whole group of applciationsdts
+            valueFiles:
+              - $addonsValues/addons/bootstrap/defaults/addons.yaml
+            {{- range $repoName := $repoNames }}
+              {{- $repoRef := printf "%sValues" $repoName }}
+              {{- $basePath := default (index $.metadata.annotations (printf "%s_repo_basepath" $repoName)) (index $ (printf "%s_repo_basepath" $repoName)) }}
+              {{- range $pattern := $pathPatterns }}
+              - ${{ $repoRef }}/{{ $basePath }}/{{ $pattern }}/{{ $commonValuesPath }}
+              {{- end }}
+            {{- end }}
