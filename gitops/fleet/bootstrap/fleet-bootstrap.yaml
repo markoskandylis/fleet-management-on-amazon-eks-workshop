@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: fleet-registration-v2
+  name: fleet-registration
   namespace: argocd
 spec:
   goTemplate: true

@@ -1,0 +1,31 @@
+# applicationSets.yaml
+releases:
+  addons:
+  - type: "default"
+    use_helm_repo_path: "false"
+    chartRepo: "471112582304.dkr.ecr.eu-west-2.amazonaws.com"
+    ecrChartName: "application-sets"
+    version: 0.3.3
+  - type: "dev"
+    use_helm_repo_path: "true"
+    chartRepo: "471112582304.dkr.ecr.eu-west-2.amazonaws.com"
+    ecrChartName: "application-sets"
+    version: 0.3.3
+  monitoring:
+  - type: "release1"
+    use_helm_repo_path: "true"
+    chartRepo: "471112582304.dkr.ecr.eu-west-2.amazonaws.com"
+    ecrChartName: "application-sets"
+    version: 0.3.3
+  resources:
+  - type: "default"
+    use_helm_repo_path: "false"
+    ecrChartName: "application-sets"
+    chartRepo: "471112582304.dkr.ecr.eu-west-2.amazonaws.com"
+    version: 0.3.3
+  fleet:
+  - type: "default"
+    use_helm_repo_path: "true"
+    ecrChartName: "application-sets"
+    chartRepo: "471112582304.dkr.ecr.eu-west-2.amazonaws.com"
+    version: 0.3.3

@@ -1,0 +1,13 @@
+################################################################################
+# This file is used to populate the values of fleet-hub-external-secets-appset.yaml
+################################################################################
+
+################################################################################
+# Cluster Related values
+################################################################################
+tenant:  "tenant1" # Tenancy membership that will help us define the folder structure
+clusterName: "fleet-spoke-staging"
+environment: "staging"
+addons_repo_basepath: "addons/tenants" # Individuall path of eatch cluster we deploy helper for folder strucure
+resources_repo_basepath: "resources/tenants"
+secretManagerSecretName: "fleet-hub-cluster/fleet-spoke-staging"

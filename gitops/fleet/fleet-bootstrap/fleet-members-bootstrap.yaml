@@ -84,7 +84,7 @@ spec:
           repoURL: '{{.metadata.annotations.fleet_repo_url}}'
           targetRevision: '{{.metadata.annotations.fleet_repo_revision}}'
         - repoURL: '{{.metadata.annotations.fleet_repo_url}}'
-          path: '{{.metadata.annotations.fleet_repo_basepath}}/fleet-bootstrap/members-init-v2'
+          path: '{{.metadata.annotations.fleet_repo_basepath}}/fleet-bootstrap/members-init'
           targetRevision: '{{.metadata.annotations.fleet_repo_revision}}'
        {{- if  eq .use_helm_repo_path "false" }}
         - repoURL: '{{default .values.chartRepo .chartRepo }}'
@@ -115,4 +115,4 @@ spec:
                 use_remote_argo: 'true'
               {{- end }}  
             valueFiles:
-              - $values/fleet/fleet-bootstrap/members-init-v2/fleet-spoke-bootstrap-values.yaml
+              - $values/fleet/fleet-bootstrap/members-init/fleet-spoke-bootstrap-values.yaml
