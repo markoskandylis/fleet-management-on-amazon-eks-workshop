@@ -92,3 +92,6 @@ cp -r ${ROOTDIR}/gitops/fleet/* ${GITOPS_DIR}/fleet/
 git -C ${GITOPS_DIR}/fleet add . || true
 git -C ${GITOPS_DIR}/fleet commit -m "initial commit" || true
 git -C ${GITOPS_DIR}/fleet push -u origin main -f || true
+
+
+
